@@ -103,10 +103,11 @@ function _displayDefault() {
 
   touchBarState=''
 
+  _displayDockerComposeUp
   # CURRENT_DIR
-  # -----------
-  pecho "\033]1337;SetKeyLabel=F1=👉 $(echo $(pwd) | awk -F/ '{print $(NF-1)"/"$(NF)}')\a"
-  bindkey -s '^[OP' 'pwd \n'
+  # !!Checks current directory, we don't care about that for now
+  # pecho "\033]1337;SetKeyLabel=F1=👉 $(echo $(pwd) | awk -F/ '{print $(NF-1)"/"$(NF)}')\a"
+  # bindkey -s '^[OP' 'pwd \n'
 
   # GIT
   # ---
@@ -219,6 +220,13 @@ function _displayBranches() {
 
   pecho "\033]1337;SetKeyLabel=F1=👈 back\a"
   bindkey "${fnKeys[1]}" _displayDefault
+}
+
+function _displayDockerComposeUp() {
+  if [[ ${PWD##*/} == "coms" ]]; then
+    pecho "\033]1337;SetKeyLabel=F1=docker-compose up\a"
+    bindkey -s ${fnKeys[1]} "docker-compose up \n"
+  fi
 }
 
 zle -N _displayDefault
