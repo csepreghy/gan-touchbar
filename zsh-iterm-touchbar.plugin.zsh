@@ -226,13 +226,7 @@ function _displayDockerComposeUp() {
   if [[ ${PWD##*/} == "coms" ]]; then
     pecho "\033]1337;SetKeyLabel=F1=docker-compose up\a"
     bindkey -s ${fnKeys[1]} "docker-compose up \n"
-  elif [[ ${PWD##*/} == "coms2" ]]; then
-    pecho "\033]1337;SetKeyLabel=F1=npm start\a"
-    bindkey -s ${fnKeys[1]} "npm start\n"
-  elif [[ ${PWD##*/} == "coms2api" ]]; then
-    pecho "\033]1337;SetKeyLabel=F1=npm start\a"
-    bindkey -s ${fnKeys[1]} "npm start\n"
-  elif [[ ${PWD##*/} == "coms2oauth" ]]; then
+  elif [[ -e package.json ]]; then
     pecho "\033]1337;SetKeyLabel=F1=npm start\a"
     bindkey -s ${fnKeys[1]} "npm start\n"
   fi
