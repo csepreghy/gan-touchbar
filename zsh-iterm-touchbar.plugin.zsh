@@ -50,6 +50,10 @@ git_stashed() {
   fi
 }
 
+git_pull() {
+  echo "git pull"
+}
+
 # Unpushed and unpulled commits.
 # Get unpushed and unpulled commits from remote and draw arrows.
 git_unpushed_unpulled() {
@@ -120,35 +124,57 @@ function _displayDefault() {
     # Ensure the index is up to date.
     git update-index --really-refresh -q &>/dev/null
 
-    # String of indicators
-    local indicators=''
+    # git status
+    pecho "\033]1337;SetKeyLabel=F2=git status\a"
+    bindkey -s ${fnKeys[2]} "git status\n"
 
-    indicators+="$(git_uncomitted)"
-    indicators+="$(git_unstaged)"
-    indicators+="$(git_untracked)"
-    indicators+="$(git_stashed)"
-    indicators+="$(git_unpushed_unpulled)"
+    # git diff
+    pecho "\033]1337;SetKeyLabel=F3=git diff\a"
+    bindkey -s ${fnKeys[3]} "git diff\n"
 
-    [ -n "${indicators}" ] && touchbarIndicators="🔥[${indicators}]" || touchbarIndicators="🙌";
+    # git pull
+    pecho "\033]1337;SetKeyLabel=F4=git pull\a"
+    bindkey -s ${fnKeys[4]} "git pull\n"
 
-    pecho "\033]1337;SetKeyLabel=F2=🎋 $(git_current_branch)\a"
-    pecho "\033]1337;SetKeyLabel=F3=$touchbarIndicators\a"
-    pecho "\033]1337;SetKeyLabel=F4=✉️ push\a";
+    # npm i
+    pecho "\033]1337;SetKeyLabel=F6=npm i\a"
+    bindkey -s ${fnKeys[6]} "npm install\n"
+
+    pecho "\033]1337;SetKeyLabel=F7=git commit\a"
+    bindkey -s ${fnKeys[7]} 'git add .\n git commit -m "'
 
     # bind git actions
-    bindkey '^[OQ' _displayBranches
-    bindkey -s '^[OR' 'git status \n'
-    bindkey -s '^[OS' "git push origin $(git_current_branch) \n"
+    
+    # bindkey '^[OQ' _displayBranches
+    # bindkey -s '^[OR' 'git status \n'
+    # bindkey -s '^[OS' "git push origin $(git_current_branch) \n"
+
   fi
+
+    # check if the value exists
+    has_stashed=1
+
+    if [[ $has_stashed == 0 ]]; then
+      pecho "\033]1337;SetKeyLabel=F5=git stash apply\a"
+      bindkey -s ${fnKeys[5]} "git stash apply\n"
+      has_stashed=0
+
+    else
+      pecho "\033]1337;SetKeyLabel=F5=git stash\a"
+      bindkey -s ${fnKeys[5]} "git stash\n"
+      has_stashed=1
+    fi
+
+
 
   # PACKAGE.JSON
   # ------------
-  if [[ -f package.json ]]; then
-      else
-          pecho "\033]1337;SetKeyLabel=F5=⚡️ npm-run\a"
-          bindkey "${fnKeys[5]}" _displayNpmScripts
-    fi
-  fi
+  # if [[ -f package.json ]]; then
+  #     else
+  #         pecho "\033]1337;SetKeyLabel=F5=⚡️ npm-run\a"
+  #         bindkey "${fnKeys[5]}" _displayNpmScripts
+  #   fi
+  # fi
 }
 
 function _displayNpmScripts() {
